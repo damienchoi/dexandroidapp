@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+
+    <!--Default-->
+    <color name="defaultTextColor">#ffffff</color>
+    <color name="defaultBackColor">#1e1e20</color>
+    <color name="defaultBackColorTransparent">#cc1e1e20</color>
+
+    <!--Gradation-->
+    <color name="gradationFirst">#213e78</color>
+    <color name="gradationMiddle">#2d2d51</color>
+    <color name="gradationEnd">#2f2637</color>
+
+    <!--Button-->
+    <color name="redBtn">#f24141</color>
+    <color name="greenBtn">#0f8979</color>
+    <color name="btnBack">#2e2639</color>
+    <color name="btnTxtColor">#f4e390</color>
+    <color name="addBtnBg">#213258</color>
+    <color name="btnHover">#223d76</color>
+    <color name="naviBtnBg">#2c2837</color>
+
+    
+    <color name="boardBg">#242227</color>
+    <color name="dotBg">#52669b</color>
+    <color name="grayTextColor">#a29e9e</color>
+    <color name="viewLine">#493f5b</color>
+
+
+</resources>
