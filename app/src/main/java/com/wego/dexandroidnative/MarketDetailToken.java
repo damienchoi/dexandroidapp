@@ -11,6 +11,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.wego.dexandroidnative.contracts.CpublicDex_sol_CpublicDex;
+import com.wego.dexandroidnative.contracts.CpublicDex_sol_ReserveToken;
+import com.wego.dexandroidnative.contracts.CpublicDex_sol_SafeMath;
+import com.wego.dexandroidnative.contracts.CpublicDex_sol_StandardToken;
+import com.wego.dexandroidnative.contracts.CpublicDex_sol_Token;
 import com.wego.dexandroidnative.utilities.Web3jConstant;
 import com.wego.dexandroidnative.utilities.Web3jFactory;
 
@@ -19,9 +23,9 @@ import org.web3j.crypto.ECKeyPair;
 import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.DefaultBlockParameterName;
 import org.web3j.protocol.core.methods.response.EthGetBalance;
-import org.web3j.protocol.core.methods.response.TransactionReceipt;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
+import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
@@ -44,13 +48,14 @@ public class MarketDetailToken extends AppCompatActivity implements View.OnClick
     ImageView depth_chart;
     ImageView chart_image;
 
-
-    boolean isInfura = true;
+    boolean isInfura = false;
 
     static CpublicDex_sol_CpublicDex cpublicDexContract;
-//    static CpublicDex_sol_ReserveToken reserveTokenContract;
-//    static CpublicDex_sol_SafeMath safeMathContract;
-//    static CpublicDex_sol_Token tokenContract = null;
+    static CpublicDex_sol_Token tokenContract;
+    static CpublicDex_sol_StandardToken standardTokenContract;
+    static CpublicDex_sol_SafeMath safeMathContract;
+    static CpublicDex_sol_ReserveToken reserveTokenContract;
+
 
     static public Web3j web3j = null;
     static String clientUrl = null;
@@ -62,7 +67,6 @@ public class MarketDetailToken extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_market_detail);
-
 
         StartConnect();
         Web3ClientVersion client = null;
@@ -95,20 +99,45 @@ public class MarketDetailToken extends AppCompatActivity implements View.OnClick
 
         try{
             CpublicDex_sol_CpublicDex cpublicDexLoaded = loadCpublicDexContract();
+            CpublicDex_sol_Token tokenLoaded = loadTokenContract();
+            CpublicDex_sol_StandardToken standardTokenLoaded = loadStandardTokenContract();
+            CpublicDex_sol_ReserveToken reserverTokenLoaded = loadReserveTokenContract();
+            CpublicDex_sol_SafeMath safeMathLoaded = loadSafeMathContract();
+
         }catch(Exception e){
             e.printStackTrace();
         }
 
         try {
+            EthGetBalance ethGetBalance;
+            BigInteger balanceinWei;
+            BigDecimal weiToEther;
 
-            //Display Balance
-            EthGetBalance ethGetBalance = web3j.ethGetBalance(ADDRESS, DefaultBlockParameterName.LATEST).sendAsync().get();
-            BigInteger balanceinWei = ethGetBalance.getBalance();
-            BigDecimal weiToEther = Convert.fromWei(balanceinWei.toString(), Convert.Unit.ETHER);
-            Log.d("test", "getEthBalance function test result :::::::::: " + weiToEther.toString());
-            BigInteger balanceinWei2 = MarketDetailToken.cpublicDexContract.balanceOf(Web3jConstant.TOKEN_ADDRESS ,ADDRESS).sendAsync().get();
-            BigDecimal weiToEther2 = Convert.fromWei(balanceinWei2.toString(), Convert.Unit.ETHER);
-            Log.d("test", "BALANCEOF: " + weiToEther2.toString());
+            //Get ether balance
+            ethGetBalance = web3j.ethGetBalance(ADDRESS, DefaultBlockParameterName.LATEST).sendAsync().get();
+            balanceinWei = ethGetBalance.getBalance();
+            weiToEther = Convert.fromWei(balanceinWei.toString(), Convert.Unit.ETHER);
+            Log.d("test", "Ether balance before sending : : " + weiToEther.toString());
+
+            balanceinWei = MarketDetailToken.standardTokenContract.balanceOf(ADDRESS).sendAsync().get();
+            weiToEther = Convert.fromWei(balanceinWei.toString(), Convert.Unit.ETHER);
+            Log.d("test", "Token balance before sending : " + weiToEther.toString());
+
+            //Send ether
+            Transfer.sendFunds(web3j, CREDENTIALS, Web3jConstant.TEST_RECEIVER, BigDecimal.valueOf(1.0), Convert.Unit.ETHER).sendAsync().get();
+            //Send token
+            standardTokenContract.transfer(Web3jConstant.TEST_RECEIVER, BigInteger.valueOf(1_000_000_000_000_000L)).sendAsync().get();
+
+
+            ethGetBalance = web3j.ethGetBalance(ADDRESS, DefaultBlockParameterName.LATEST).sendAsync().get();
+            balanceinWei = ethGetBalance.getBalance();
+            weiToEther = Convert.fromWei(balanceinWei.toString(), Convert.Unit.ETHER);
+            Log.d("test", "Ether balance after sending : : " + weiToEther.toString());
+
+            balanceinWei = MarketDetailToken.standardTokenContract.balanceOf(ADDRESS).sendAsync().get();
+            weiToEther = Convert.fromWei(balanceinWei.toString(), Convert.Unit.ETHER);
+            Log.d("test", "Token balance after sending : " + weiToEther.toString());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -173,9 +202,34 @@ public class MarketDetailToken extends AppCompatActivity implements View.OnClick
     }
 
     public CpublicDex_sol_CpublicDex loadCpublicDexContract() throws Exception {
-        cpublicDexContract = CpublicDex_sol_CpublicDex.load(Web3jConstant.CONTRACT_ADDRESS, web3j, CREDENTIALS, Web3jConstant.GAS_PRICE, Web3jConstant.GAS_LIMIT_CP_TX.multiply(BigInteger.valueOf(2)));
+        cpublicDexContract = CpublicDex_sol_CpublicDex.load(Web3jConstant.TOKEN_ADDRESS, web3j, CREDENTIALS, Web3jConstant.GAS_PRICE, Web3jConstant.GAS_LIMIT_CP_TX.multiply(BigInteger.valueOf(2)));
         String contractAddress = cpublicDexContract.getContractAddress();
-        Log.d("Test", "CpublicDex Contract Address :" + contractAddress);
+        Log.d("Test", "CpublicDex Contract Address :::::::::" + contractAddress);
         return cpublicDexContract;
     }
+    public CpublicDex_sol_ReserveToken loadReserveTokenContract() throws Exception {
+        reserveTokenContract = CpublicDex_sol_ReserveToken.load(Web3jConstant.DEX_CONTRACT_ADDRESS, web3j, CREDENTIALS, Web3jConstant.GAS_PRICE, Web3jConstant.GAS_LIMIT_CP_TX.multiply(BigInteger.valueOf(2)));
+        String contractAddress = reserveTokenContract.getContractAddress();
+        Log.d("Test", "ReserveToken Contract Address :::::::::" + contractAddress);
+        return reserveTokenContract;
+    }
+    public CpublicDex_sol_Token loadTokenContract() throws Exception {
+        tokenContract = CpublicDex_sol_Token.load(Web3jConstant.DEX_CONTRACT_ADDRESS, web3j, CREDENTIALS, Web3jConstant.GAS_PRICE, Web3jConstant.GAS_LIMIT_CP_TX.multiply(BigInteger.valueOf(2)));
+        String contractAddress = tokenContract.getContractAddress();
+        Log.d("Test", "Token Contract Address :::::::::" + contractAddress);
+        return tokenContract;
+    }
+    public CpublicDex_sol_StandardToken loadStandardTokenContract() throws Exception {
+        standardTokenContract = CpublicDex_sol_StandardToken.load(Web3jConstant.TOKEN_ADDRESS, web3j, CREDENTIALS, Web3jConstant.GAS_PRICE, Web3jConstant.GAS_LIMIT_CP_TX.multiply(BigInteger.valueOf(2)));
+        String contractAddress = standardTokenContract.getContractAddress();
+        Log.d("Test", "StandardToken Contract Address :::::::::" + contractAddress);
+        return standardTokenContract;
+    }
+    public CpublicDex_sol_SafeMath loadSafeMathContract() throws Exception {
+        safeMathContract = CpublicDex_sol_SafeMath.load(Web3jConstant.DEX_CONTRACT_ADDRESS, web3j, CREDENTIALS, Web3jConstant.GAS_PRICE, Web3jConstant.GAS_LIMIT_CP_TX.multiply(BigInteger.valueOf(2)));
+        String contractAddress = safeMathContract.getContractAddress();
+        Log.d("Test", "SafeMath Contract Address :::::::::" + contractAddress);
+        return safeMathContract;
+    }
+
 }

@@ -12,6 +12,7 @@ import org.web3j.abi.datatypes.Address;
 import org.web3j.abi.datatypes.Event;
 import org.web3j.abi.datatypes.Function;
 import org.web3j.abi.datatypes.Type;
+import org.web3j.abi.datatypes.Utf8String;
 import org.web3j.abi.datatypes.generated.Uint256;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -33,14 +34,18 @@ import org.web3j.tx.gas.ContractGasProvider;
  *
  * <p>Generated with web3j version 4.3.0.
  */
-public class IToken_sol_IToken extends Contract {
+public class CpublicDex_sol_StandardToken extends Contract {
     private static final String BINARY = "";
+
+    public static final String FUNC_NAME = "name";
 
     public static final String FUNC_APPROVE = "approve";
 
     public static final String FUNC_TOTALSUPPLY = "totalSupply";
 
     public static final String FUNC_TRANSFERFROM = "transferFrom";
+
+    public static final String FUNC_DECIMALS = "decimals";
 
     public static final String FUNC_BALANCEOF = "balanceOf";
 
@@ -57,21 +62,28 @@ public class IToken_sol_IToken extends Contract {
     ;
 
     @Deprecated
-    protected IToken_sol_IToken(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+    protected CpublicDex_sol_StandardToken(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
-    protected IToken_sol_IToken(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+    protected CpublicDex_sol_StandardToken(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, credentials, contractGasProvider);
     }
 
     @Deprecated
-    protected IToken_sol_IToken(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+    protected CpublicDex_sol_StandardToken(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
         super(BINARY, contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    protected IToken_sol_IToken(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+    protected CpublicDex_sol_StandardToken(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
         super(BINARY, contractAddress, web3j, transactionManager, contractGasProvider);
+    }
+
+    public RemoteCall<String> name() {
+        final Function function = new Function(FUNC_NAME, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Utf8String>() {}));
+        return executeRemoteCallSingleValueReturn(function, String.class);
     }
 
     public RemoteCall<TransactionReceipt> approve(String _spender, BigInteger _value) {
@@ -83,12 +95,11 @@ public class IToken_sol_IToken extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> totalSupply() {
-        final Function function = new Function(
-                FUNC_TOTALSUPPLY, 
+    public RemoteCall<BigInteger> totalSupply() {
+        final Function function = new Function(FUNC_TOTALSUPPLY, 
                 Arrays.<Type>asList(), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<TransactionReceipt> transferFrom(String _from, String _to, BigInteger _value) {
@@ -101,12 +112,18 @@ public class IToken_sol_IToken extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> balanceOf(String _owner) {
-        final Function function = new Function(
-                FUNC_BALANCEOF, 
+    public RemoteCall<BigInteger> decimals() {
+        final Function function = new Function(FUNC_DECIMALS, 
+                Arrays.<Type>asList(), 
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
+    }
+
+    public RemoteCall<BigInteger> balanceOf(String _owner) {
+        final Function function = new Function(FUNC_BALANCEOF, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public RemoteCall<TransactionReceipt> transfer(String _to, BigInteger _value) {
@@ -118,13 +135,12 @@ public class IToken_sol_IToken extends Contract {
         return executeRemoteCallTransaction(function);
     }
 
-    public RemoteCall<TransactionReceipt> allowance(String _owner, String _spender) {
-        final Function function = new Function(
-                FUNC_ALLOWANCE, 
+    public RemoteCall<BigInteger> allowance(String _owner, String _spender) {
+        final Function function = new Function(FUNC_ALLOWANCE, 
                 Arrays.<Type>asList(new org.web3j.abi.datatypes.Address(_owner), 
                 new org.web3j.abi.datatypes.Address(_spender)), 
-                Collections.<TypeReference<?>>emptyList());
-        return executeRemoteCallTransaction(function);
+                Arrays.<TypeReference<?>>asList(new TypeReference<Uint256>() {}));
+        return executeRemoteCallSingleValueReturn(function, BigInteger.class);
     }
 
     public List<TransferEventResponse> getTransferEvents(TransactionReceipt transactionReceipt) {
@@ -198,39 +214,39 @@ public class IToken_sol_IToken extends Contract {
     }
 
     @Deprecated
-    public static IToken_sol_IToken load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return new IToken_sol_IToken(contractAddress, web3j, credentials, gasPrice, gasLimit);
+    public static CpublicDex_sol_StandardToken load(String contractAddress, Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return new CpublicDex_sol_StandardToken(contractAddress, web3j, credentials, gasPrice, gasLimit);
     }
 
     @Deprecated
-    public static IToken_sol_IToken load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return new IToken_sol_IToken(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
+    public static CpublicDex_sol_StandardToken load(String contractAddress, Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return new CpublicDex_sol_StandardToken(contractAddress, web3j, transactionManager, gasPrice, gasLimit);
     }
 
-    public static IToken_sol_IToken load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return new IToken_sol_IToken(contractAddress, web3j, credentials, contractGasProvider);
+    public static CpublicDex_sol_StandardToken load(String contractAddress, Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+        return new CpublicDex_sol_StandardToken(contractAddress, web3j, credentials, contractGasProvider);
     }
 
-    public static IToken_sol_IToken load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return new IToken_sol_IToken(contractAddress, web3j, transactionManager, contractGasProvider);
+    public static CpublicDex_sol_StandardToken load(String contractAddress, Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+        return new CpublicDex_sol_StandardToken(contractAddress, web3j, transactionManager, contractGasProvider);
     }
 
-    public static RemoteCall<IToken_sol_IToken> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
-        return deployRemoteCall(IToken_sol_IToken.class, web3j, credentials, contractGasProvider, BINARY, "");
-    }
-
-    @Deprecated
-    public static RemoteCall<IToken_sol_IToken> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(IToken_sol_IToken.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
-    }
-
-    public static RemoteCall<IToken_sol_IToken> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
-        return deployRemoteCall(IToken_sol_IToken.class, web3j, transactionManager, contractGasProvider, BINARY, "");
+    public static RemoteCall<CpublicDex_sol_StandardToken> deploy(Web3j web3j, Credentials credentials, ContractGasProvider contractGasProvider) {
+        return deployRemoteCall(CpublicDex_sol_StandardToken.class, web3j, credentials, contractGasProvider, BINARY, "");
     }
 
     @Deprecated
-    public static RemoteCall<IToken_sol_IToken> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
-        return deployRemoteCall(IToken_sol_IToken.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
+    public static RemoteCall<CpublicDex_sol_StandardToken> deploy(Web3j web3j, Credentials credentials, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(CpublicDex_sol_StandardToken.class, web3j, credentials, gasPrice, gasLimit, BINARY, "");
+    }
+
+    public static RemoteCall<CpublicDex_sol_StandardToken> deploy(Web3j web3j, TransactionManager transactionManager, ContractGasProvider contractGasProvider) {
+        return deployRemoteCall(CpublicDex_sol_StandardToken.class, web3j, transactionManager, contractGasProvider, BINARY, "");
+    }
+
+    @Deprecated
+    public static RemoteCall<CpublicDex_sol_StandardToken> deploy(Web3j web3j, TransactionManager transactionManager, BigInteger gasPrice, BigInteger gasLimit) {
+        return deployRemoteCall(CpublicDex_sol_StandardToken.class, web3j, transactionManager, gasPrice, gasLimit, BINARY, "");
     }
 
     public static class TransferEventResponse {

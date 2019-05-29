@@ -32,11 +32,13 @@ public class Web3jConstant {
 
 
     //Ropsten Contract V2:
-    public static final String CONTRACT_ADDRESS = "";
+    public static final String DEX_CONTRACT_ADDRESS = "";
     //Ropsten Contract V1
-//    public static final String CONTRACT_ADDRESS = "";
+//    public static final String DEX_CONTRACT_ADDRESS = "";
     //TestNeta:
-    //public static final String CONTRACT_ADDRESS = "";
+    //public static final String DEX_CONTRACT_ADDRESS = "";
+
+    public static final String I_TOKEN_CONTRACT_ADDRESS = "";
 
     public static final String TOKEN_ADDRESS = "";
 
